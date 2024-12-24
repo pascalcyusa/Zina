@@ -22,6 +22,13 @@ class PersonStore: ObservableObject {
         }
     }
     
+    func update(_ person: Person) {
+        if let index = people.firstIndex(where: { $0.id == person.id }) {
+            people[index] = person
+            save()
+        }
+    }
+    
     private func loadPeople() {
         do {
             let data = try Data(contentsOf: savePath)

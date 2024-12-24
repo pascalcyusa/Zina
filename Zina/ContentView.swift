@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var personStore = PersonStore()
     @State private var showingAddPerson = false
+    @State private var personToEdit: Person?
     
     var body: some View {
         NavigationStack {
@@ -17,7 +18,12 @@ struct ContentView: View {
                 if personStore.people.isEmpty {
                     EmptyStateView()
                 } else {
-                    ConnectionsGraphView(people: personStore.people)
+                    ConnectionsGraphView(
+                        people: personStore.people,
+                        onPersonSelected: { person in
+                            personToEdit = person
+                        }
+                    )
                 }
             }
             .navigationTitle("My Connections")
@@ -33,6 +39,18 @@ struct ContentView: View {
                 AddPersonWizard(savedPeople: .constant(personStore.people)) { person in
                     personStore.add(person)
                 }
+            }
+            .sheet(item: $personToEdit) { person in
+                EditPersonSheet(
+                    person: person,
+                    savedPeople: personStore.people,
+                    onUpdate: { updatedPerson in
+                        personStore.update(updatedPerson)
+                    },
+                    onDelete: { person in
+                        personStore.delete(person)
+                    }
+                )
             }
         }
     }
