@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		502678C92D1B71AE00C816F3 /* Zina.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 502678C72D1B71AE00C816F3 /* Zina.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		502678A52D1B60EE00C816F3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		502678942D1B60EC00C816F3 /* Zina.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zina.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		502678A42D1B60EE00C816F3 /* ZinaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZinaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		502678AE2D1B60EE00C816F3 /* ZinaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZinaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		502678C82D1B71AE00C816F3 /* Zina.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Zina.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		5026788B2D1B60EC00C816F3 = {
 			isa = PBXGroup;
 			children = (
+				502678C72D1B71AE00C816F3 /* Zina.xcdatamodeld */,
 				502678962D1B60EC00C816F3 /* Zina */,
 				502678A72D1B60EE00C816F3 /* ZinaTests */,
 				502678B12D1B60EE00C816F3 /* ZinaUITests */,
@@ -236,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				502678C92D1B71AE00C816F3 /* Zina.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +565,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		502678C72D1B71AE00C816F3 /* Zina.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				502678C82D1B71AE00C816F3 /* Zina.xcdatamodel */,
+			);
+			currentVersion = 502678C82D1B71AE00C816F3 /* Zina.xcdatamodel */;
+			path = Zina.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5026788C2D1B60EC00C816F3 /* Project object */;
 }
