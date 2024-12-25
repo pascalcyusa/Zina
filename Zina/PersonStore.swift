@@ -11,7 +11,7 @@ class PersonStore: ObservableObject {
     }
     
     func add(_ person: Person) {
-        var newPerson = person
+        let newPerson = person // Changed from var to let
         
         // Add bidirectional connections
         for connectionID in person.connections {
