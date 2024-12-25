@@ -3,7 +3,7 @@ import SwiftUI
 
 struct AddPersonWizard: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var savedPeople: [Person]
+    let savedPeople: [Person]
     let onSave: (Person) -> Void
     
     @State private var currentStep = 0
@@ -16,6 +16,7 @@ struct AddPersonWizard: View {
             VStack {
                 ProgressView(value: Double(currentStep), total: 3)
                     .padding()
+                    .tint(Theme.accent)
                 
                 TabView(selection: $currentStep) {
                     // Step 1: Name
@@ -43,6 +44,7 @@ struct AddPersonWizard: View {
                                 currentStep -= 1
                             }
                         }
+                        .buttonStyle(.bordered)
                     }
                     
                     Spacer()
@@ -56,6 +58,7 @@ struct AddPersonWizard: View {
                             }
                         }
                     }
+                    .buttonStyle(.borderedProminent)
                     .disabled(currentStep == 0 && name.isEmpty)
                 }
                 .padding()
@@ -63,7 +66,7 @@ struct AddPersonWizard: View {
             .navigationTitle("Add New Connection")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         dismiss()
                     }
@@ -86,18 +89,32 @@ struct AddPersonWizard: View {
 // Step Views
 struct NameInputView: View {
     @Binding var name: String
+    @FocusState private var isNameFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(spacing: 30) {
             Text("What's their name?")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
             
-            TextField("Enter name", text: $name)
-                .textFieldStyle(.roundedBorder)
+            TextField("", text: $name)
+                .focused($isNameFocused)
                 .font(.title3)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Theme.cardBackground)
+                        .shadow(color: Theme.cardShadow, radius: 8, y: 4)
+                )
+                .overlay(
+                    Text(name.isEmpty ? "Enter name" : "")
+                        .foregroundStyle(.gray)
+                )
         }
-        .padding()
+        .padding(30)
+        .onAppear { isNameFocused = true }
     }
 }
 
@@ -130,6 +147,7 @@ struct MeetingPlaceView: View {
     }
 }
 
+// Make sure ConnectionsSelectionView filters out empty state
 struct ConnectionsSelectionView: View {
     let savedPeople: [Person]
     @Binding var selectedConnections: Set<UUID>
@@ -152,20 +170,24 @@ struct ConnectionsSelectionView: View {
                             Spacer()
                             if selectedConnections.contains(person.id) {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(Theme.accent)
                             }
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            if selectedConnections.contains(person.id) {
-                                selectedConnections.remove(person.id)
-                            } else {
-                                selectedConnections.insert(person.id)
+                            withAnimation(.spring(duration: 0.2)) {
+                                if selectedConnections.contains(person.id) {
+                                    selectedConnections.remove(person.id)
+                                } else {
+                                    selectedConnections.insert(person.id)
+                                }
                             }
                         }
                     }
                 }
+                .listStyle(.plain)
             }
         }
+        .padding()
     }
 }

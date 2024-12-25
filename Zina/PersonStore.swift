@@ -11,22 +11,51 @@ class PersonStore: ObservableObject {
     }
     
     func add(_ person: Person) {
-        people.append(person)
+        var newPerson = person
+        
+        // Add bidirectional connections
+        for connectionID in person.connections {
+            if let index = people.firstIndex(where: { $0.id == connectionID }) {
+                people[index].connections.insert(newPerson.id)
+            }
+        }
+        
+        people.append(newPerson)
         save()
     }
     
     func delete(_ person: Person) {
-        if let index = people.firstIndex(where: { $0.id == person.id }) {
-            people.remove(at: index)
-            save()
+        // Remove bidirectional connections
+        for connectionID in person.connections {
+            if let index = people.firstIndex(where: { $0.id == connectionID }) {
+                people[index].connections.remove(person.id)
+            }
         }
+        
+        people.removeAll(where: { $0.id == person.id })
+        save()
     }
     
     func update(_ person: Person) {
-        if let index = people.firstIndex(where: { $0.id == person.id }) {
-            people[index] = person
-            save()
+        guard let index = people.firstIndex(where: { $0.id == person.id }) else { return }
+        
+        // Remove old connections
+        let oldConnections = people[index].connections
+        for connectionID in oldConnections {
+            if let connIndex = people.firstIndex(where: { $0.id == connectionID }) {
+                people[connIndex].connections.remove(person.id)
+            }
         }
+        
+        // Add new connections
+        for connectionID in person.connections {
+            if let connIndex = people.firstIndex(where: { $0.id == connectionID }) {
+                people[connIndex].connections.insert(person.id)
+            }
+        }
+        
+        people[index] = person
+        save()
     }
     
     private func loadPeople() {

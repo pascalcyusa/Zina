@@ -11,33 +11,63 @@ struct ContentView: View {
     @StateObject private var personStore = PersonStore()
     @State private var showingAddPerson = false
     @State private var personToEdit: Person?
+    @State private var isGraphView = false
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if personStore.people.isEmpty {
-                    EmptyStateView()
-                } else {
-                    ConnectionsGraphView(
-                        people: personStore.people,
-                        onPersonSelected: { person in
-                            personToEdit = person
+            ZStack {
+                Theme.background
+                    .ignoresSafeArea()
+                
+                VStack {
+                    if personStore.people.isEmpty {
+                        EmptyStateView()
+                    } else {
+                        if isGraphView {
+                            NetworkGraphView(people: personStore.people)
+                                .transition(.move(edge: .trailing))
+                        } else {
+                            ConnectionsGridView(
+                                people: personStore.people,
+                                onPersonSelected: { person in
+                                    personToEdit = person
+                                }
+                            )
+                            .transition(.move(edge: .leading))
                         }
-                    )
+                    }
                 }
             }
             .navigationTitle("My Connections")
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                Button(action: {
-                    showingAddPerson = true
-                }) {
-                    Image(systemName: "person.badge.plus")
-                        .font(.title2)
+                ToolbarItem(placement: .topBarLeading) {
+                    if !personStore.people.isEmpty {
+                        Button(action: {
+                            withAnimation(.spring(duration: 0.6)) {
+                                isGraphView.toggle()
+                            }
+                        }) {
+                            Image(systemName: isGraphView ? "square.grid.2x2" : "network")
+                                .font(.title2)
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        withAnimation {
+                            showingAddPerson = true
+                        }
+                    }) {
+                        Image(systemName: "person.badge.plus")
+                            .font(.title2)
+                    }
                 }
             }
             .sheet(isPresented: $showingAddPerson) {
-                AddPersonWizard(savedPeople: .constant(personStore.people)) { person in
-                    personStore.add(person)
+                AddPersonWizard(savedPeople: personStore.people) { newPerson in
+                    personStore.add(newPerson)
                 }
             }
             .sheet(item: $personToEdit) { person in
@@ -53,6 +83,7 @@ struct ContentView: View {
                 )
             }
         }
+        .preferredColorScheme(.dark)
     }
 }
 

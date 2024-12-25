@@ -30,13 +30,18 @@ struct PersonCard: View {
     let person: Person
     let people: [Person]
     let onEdit: (Person) -> Void
+    @State private var isHovered = false
     
     var connections: [Person] {
         people.filter { person.connections.contains($0.id) }
     }
     
     var body: some View {
-        Button(action: { onEdit(person) }) {
+        Button(action: { 
+            withAnimation(.spring()) {
+                onEdit(person)
+            }
+        }) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Image(systemName: "person.circle.fill")
@@ -70,9 +75,26 @@ struct PersonCard: View {
                 }
             }
             .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Theme.cardBackground)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Theme.haloGradient, lineWidth: isHovered ? 2 : 0)
+                    )
+                    .shadow(
+                        color: Theme.cardShadow,
+                        radius: isHovered ? 12 : 8,
+                        y: isHovered ? 4 : 2
+                    )
+            )
+            .scaleEffect(isHovered ? 1.02 : 1)
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            withAnimation(.spring(duration: 0.2)) {
+                isHovered = hovering
+            }
+        }
     }
 }
